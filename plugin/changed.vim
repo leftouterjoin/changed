@@ -37,13 +37,14 @@
 command!  Changed       :call <SID>Changed_execute()
 command!  ChangedClear  :call <SID>Changed_clear()
 
-"au! BufWritePost * Changed
+au! BufWritePost * Changed
 "au! CursorHold   * Changed
 "au! CursorHoldI  * call <SID>Changed_execute()
 " heavy
 au! InsertLeave * call <SID>Changed_execute()
 " too heavy
 "au! CursorMoved * call <SID>Changed_execute()
+au! TextChanged * call <SID>Changed_execute()
 
 if !exists('g:Changed_definedSigns')
     let g:Changed_definedSigns = 1
