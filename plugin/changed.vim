@@ -41,9 +41,9 @@ command!  ChangedClear  :call <SID>Changed_clear()
 "au! CursorHold   * Changed
 "au! CursorHoldI  * call <SID>Changed_execute()
 " heavy
-"au! InsertLeave * call <SID>Changed_execute()
+au! InsertLeave * call <SID>Changed_execute()
 " too heavy
-au! CursorMoved * call <SID>Changed_execute()
+"au! CursorMoved * call <SID>Changed_execute()
 
 if !exists('g:Changed_definedSigns')
     let g:Changed_definedSigns = 1
