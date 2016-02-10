@@ -48,8 +48,7 @@ au! TextChanged * call <SID>Changed_execute()
 
 if !exists('g:Changed_definedSigns')
     let g:Changed_definedSigns = 1
-"    highlight ChangedDefaultHl cterm=bold ctermbg=yellow ctermfg=black gui=bold guibg=yellow guifg=black
-    highlight ChangedDefaultHl cterm=bold ctermbg=red ctermfg=white gui=bold guibg=red guifg=white
+    highlight ChangedDefaultHl cterm=bold ctermbg=yellow ctermfg=black gui=bold guibg=yellow guifg=black
     sign define SIGN_CHANGED_DELETED_VIM text=- texthl=ChangedDefaultHl
     sign define SIGN_CHANGED_ADDED_VIM 	 text=+ texthl=ChangedDefaultHl
     sign define SIGN_CHANGED_VIM 		 text=* texthl=ChangedDefaultHl
