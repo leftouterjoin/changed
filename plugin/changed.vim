@@ -48,30 +48,26 @@ au! TextChanged * call <SID>Changed_execute()
 
 if !exists('g:Changed_definedSigns')
     let g:Changed_definedSigns = 1
-    highlight ChangedDefaultHl cterm=bold ctermbg=yellow ctermfg=black gui=bold guibg=yellow guifg=black
+"    highlight ChangedDefaultHl cterm=bold ctermbg=yellow ctermfg=black gui=bold guibg=yellow guifg=black
+    highlight ChangedDefaultHl cterm=bold ctermbg=green ctermfg=black gui=bold guibg=green guifg=black
     sign define SIGN_CHANGED_DELETED_VIM text=- texthl=ChangedDefaultHl
     sign define SIGN_CHANGED_ADDED_VIM 	 text=+ texthl=ChangedDefaultHl
     sign define SIGN_CHANGED_VIM 		 text=* texthl=ChangedDefaultHl
+    sign define SIGN_CHANGED_NONE
 endif
 
-
 function! s:Changed_clear()
-    if exists('b:Changed__lineNums')
-        " clear all signs
-        for c in b:Changed__lineNums
-            "echom 'sign unplace ' . c[0] . ' buffer=' . bufnr('%')
-            execute 'sign unplace ' . c[0] . ' buffer=' . bufnr('%')
-        endfor
-        unlet b:Changed__lineNums
-    endif
+    sign unplace *
+    execute 'sign place 1 line=1 name=SIGN_CHANGED_NONE buffer=' . bufnr('%')
 endfunction
 
 function! s:Changed_execute()
     if exists('b:Changed__tick') && b:Changed__tick == b:changedtick | return | endif
 
-    call s:Changed_clear()
-
-    if ! &modified | return | endif
+    if ! &modified
+        call s:Changed_clear()
+        return
+    endif
 
     " get paths
     let originalPath = substitute(expand('%:p'), '\', '/', 'g')
@@ -99,6 +95,8 @@ function! s:Changed_execute()
     " clear all temp files
     call system(iconv('rm "' . changedPath . '"', &enc, tenc))
     call system(iconv('del "' . substitute(changedPath, '/', '\', 'g') . '"', &enc, tenc))
+
+    call s:Changed_clear()
 
     " list lines and their signs
     let pos = 1 " changed line number
@@ -151,3 +149,4 @@ function! s:Changed_execute()
     "echom 'bufnr: ' . bufnr('%')
     "echom 'changedtick: ' . b:changedtick
 endfunction
+
