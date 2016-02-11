@@ -1,0 +1,29 @@
+
+    call s:Changed_clear2(changedLineNums)
+
+    " memorize the signs list for clearing saved signs
+    let b:Changed__lineNums = changedLineNums
+    let b:Changed__tick = b:changedtick
+    "echom 'bufnr: ' . bufnr('%')
+    "echom 'changedtick: ' . b:changedtick
+endfunction
+
+function! s:hasValue(list, value)
+    for c in a:list
+        if c[0] == a:value | return 1 | endif
+    endfor
+    return 0
+endfunction
+
+function! s:Changed_clear2(list)
+    if exists('b:Changed__lineNums')
+        for c in b:Changed__lineNums
+            if ! s:hasValue(a:list, c[0])
+                execute 'sign unplace ' . c[0] . ' buffer=' . bufnr('%')
+                echom '=>' . c[0]
+            endif
+        endfor
+        execute 'sign place 1 line=1 name=SIGN_CHANGED_NONE buffer=' . bufnr('%')
+    endif
+endfunction
+

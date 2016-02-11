@@ -57,6 +57,7 @@ if !exists('g:Changed_definedSigns')
 endif
 
 function! s:Changed_clear()
+    unlet b:Changed__lineNums
     sign unplace *
     execute 'sign place 1 line=1 name=SIGN_CHANGED_NONE buffer=' . bufnr('%')
 endfunction
@@ -96,8 +97,6 @@ function! s:Changed_execute()
     call system(iconv('rm "' . changedPath . '"', &enc, tenc))
     call system(iconv('del "' . substitute(changedPath, '/', '\', 'g') . '"', &enc, tenc))
 
-    call s:Changed_clear()
-
     " list lines and their signs
     let pos = 1 " changed line number
     let changedLineNums = [] " collection of pos
@@ -134,6 +133,15 @@ function! s:Changed_execute()
         if lastLineNum < lineNum
             let lineNum = lastLineNum
         endif
+        if exists('b:Changed__lineNums')
+            if s:isStillChanged(b:Changed__lineNums, c[0])
+                continue
+            endif
+"            let currentSign = s:findCurrentSign(b:Changed__lineNums, c[0])
+"            if c[1] == currentSign
+"                continue
+"            endif
+        endif
         if c[1] == '-' 
             execute 'sign place ' . c[0] . ' line=' . lineNum . ' name=SIGN_CHANGED_DELETED_VIM buffer=' . bufnr('%')
         elseif c[1] == '+'
@@ -143,10 +151,36 @@ function! s:Changed_execute()
         endif
     endfor
 
+    call s:Changed_clear2(changedLineNums)
+
     " memorize the signs list for clearing saved signs
     let b:Changed__lineNums = changedLineNums
     let b:Changed__tick = b:changedtick
     "echom 'bufnr: ' . bufnr('%')
     "echom 'changedtick: ' . b:changedtick
+endfunction
+
+function! s:findCurrentSign(list, value)
+    for c in a:list
+        if c[0] == a:value | return c[1] | endif
+    endfor
+endfunction
+
+function! s:isStillChanged(list, value)
+    for c in a:list
+        if c[0] == a:value | return 1 | endif
+    endfor
+    return 0
+endfunction
+
+function! s:Changed_clear2(list)
+    if exists('b:Changed__lineNums')
+        for c in b:Changed__lineNums
+            if ! s:isStillChanged(a:list, c[0])
+                execute 'sign unplace ' . c[0] . ' buffer=' . bufnr('%')
+            endif
+        endfor
+        execute 'sign place 1 line=1 name=SIGN_CHANGED_NONE buffer=' . bufnr('%')
+    endif
 endfunction
 
