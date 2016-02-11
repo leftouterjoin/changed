@@ -57,9 +57,13 @@ if !exists('g:Changed_definedSigns')
 endif
 
 function! s:Changed_clear()
-    unlet b:Changed__lineNums
+    if exists('b:Changed__lineNums')
+        unlet b:Changed__lineNums
+    endif
     sign unplace *
-    execute 'sign place 1 line=1 name=SIGN_CHANGED_NONE buffer=' . bufnr('%')
+    if 0 < line('$')
+        execute 'sign place 1 line=1 name=SIGN_CHANGED_NONE buffer=' . bufnr('%')
+    endif
 endfunction
 
 function! s:Changed_execute()
