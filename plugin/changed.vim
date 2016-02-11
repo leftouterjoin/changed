@@ -96,8 +96,6 @@ function! s:Changed_execute()
     call system(iconv('rm "' . changedPath . '"', &enc, tenc))
     call system(iconv('del "' . substitute(changedPath, '/', '\', 'g') . '"', &enc, tenc))
 
-    call s:Changed_clear()
-
     " list lines and their signs
     let pos = 1 " changed line number
     let changedLineNums = [] " collection of pos
@@ -126,6 +124,8 @@ function! s:Changed_execute()
         endif
     endfor
     "echom 'changedLineNums: ' . join(changedLineNums, ', ')
+
+    call s:Changed_clear()
 
     " place signs
     let lastLineNum = line('$')
