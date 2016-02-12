@@ -58,7 +58,22 @@ endif
 
 function! s:Changed_clear()
     sign unplace *
-    execute 'sign place 1 line=1 name=SIGN_CHANGED_NONE buffer=' . bufnr('%')
+    if 0 < line('$')
+        execute 'sign place 1 line=1 name=SIGN_CHANGED_NONE buffer=' . bufnr('%')
+    endif
+endfunction
+
+function! s:GetPlacedSignsString(buffer)
+    let placedstr = ''
+    redir => placedstr
+        silent execute "sign place buffer=".a:buffer
+    redir END
+    return placedstr
+endfunction
+
+function! s:test1()
+   let a = s:GetPlacedSignsString(bufnr('%'))
+   echom a
 endfunction
 
 function! s:Changed_execute()
@@ -68,6 +83,8 @@ function! s:Changed_execute()
         call s:Changed_clear()
         return
     endif
+
+    call s:test1()
 
     " get paths
     let originalPath = substitute(expand('%:p'), '\', '/', 'g')
