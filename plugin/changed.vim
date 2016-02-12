@@ -68,12 +68,21 @@ function! s:GetPlacedSignsString(buffer)
     redir => placedstr
         silent execute "sign place buffer=".a:buffer
     redir END
+    "echom placedstr
+    let l = split(placedstr, '\n')
+    for a in l
+"        let s = substitute(a, '\v\D{1,}(\d{1,})\D.*', '\1', '')
+        let s = matchstr(a, '\v\D{1,}\zs\d{1,}\ze\D.*')
+        if ! empty(s)
+            let pos = eval(s)
+            echom '>' . pos . '<'
+        endif
+    endfor
     return placedstr
 endfunction
 
 function! s:test1()
    let a = s:GetPlacedSignsString(bufnr('%'))
-   echom a
 endfunction
 
 function! s:Changed_execute()
