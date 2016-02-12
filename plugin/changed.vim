@@ -63,26 +63,21 @@ function! s:Changed_clear()
     endif
 endfunction
 
-function! s:GetPlacedSignsString(buffer)
+function! s:GetPlacedSignsDic(buffer)
     let placedstr = ''
     redir => placedstr
         silent execute "sign place buffer=".a:buffer
     redir END
-    "echom placedstr
-    let l = split(placedstr, '\n')
-    for a in l
-"        let s = substitute(a, '\v\D{1,}(\d{1,})\D.*', '\1', '')
-        let s = matchstr(a, '\v\D{1,}\zs\d{1,}\ze\D.*')
-        if ! empty(s)
-            let pos = eval(s)
-            echom '>' . pos . '<'
+    let dic ={}
+    let signPlaceLines = split(placedstr, '\n')
+    for line in signPlaceLines
+"        let s = substitute(line, '\v\D{1,}(\d{1,})\D.*', '\1', '')
+        let lineNum = matchstr(line, '\v\D{1,}\zs\d{1,}\ze\D.*')
+        if ! empty(lineNum)
+            let dic[lineNum] = matchstr(line, '\v\D{1,}\d{1,}\D{1,}\zs\d{1,}\ze\D.*')
         endif
     endfor
-    return placedstr
-endfunction
-
-function! s:test1()
-   let a = s:GetPlacedSignsString(bufnr('%'))
+    return dic
 endfunction
 
 function! s:Changed_execute()
@@ -92,8 +87,6 @@ function! s:Changed_execute()
         call s:Changed_clear()
         return
     endif
-
-    call s:test1()
 
     " get paths
     let originalPath = substitute(expand('%:p'), '\', '/', 'g')
@@ -151,14 +144,20 @@ function! s:Changed_execute()
     endfor
     "echom 'changedLineNums: ' . join(changedLineNums, ', ')
 
-    call s:Changed_clear()
+    let curSignedLines = s:GetPlacedSignsDic(bufnr('%'))
 
     " place signs
     let lastLineNum = line('$')
     for c in changedLineNums
+echom '>' . c[0]
         let lineNum = c[0]
         if lastLineNum < lineNum
             let lineNum = lastLineNum
+        endif
+        if has_key(curSignedLines, lineNum)
+echom '#' . lineNum
+            call remove(curSignedLines, lineNum)
+"            continue
         endif
         if c[1] == '-' 
             execute 'sign place ' . c[0] . ' line=' . lineNum . ' name=SIGN_CHANGED_DELETED_VIM buffer=' . bufnr('%')
@@ -169,8 +168,14 @@ function! s:Changed_execute()
         endif
     endfor
 
-    " memorize the signs list for clearing saved signs
-    let b:Changed__lineNums = changedLineNums
+"    let lineNums = keys(curSignedLines)
+    let lineNums = values(curSignedLines)
+    for n in lineNums
+echom '>>' . n
+"        execute 'sign place ' . n . ' line=' . n . ' name=SIGN_CHANGED_NONE buffer=' . bufnr('%')
+        execute 'sign unplace ' . n . ' buffer=' . bufnr('%')
+    endfor
+
     let b:Changed__tick = b:changedtick
     "echom 'bufnr: ' . bufnr('%')
     "echom 'changedtick: ' . b:changedtick
