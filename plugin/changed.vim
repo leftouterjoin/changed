@@ -72,7 +72,7 @@ function! s:GetPlacedSignsDic(buffer)
     let dic ={}
     let signPlaceLines = split(placedstr, '\n')
     for line in signPlaceLines
-        let lineNum = matchstr(line, '\v\D{1,}\zs\d{1,}\ze\D.*')
+        let lineNum = matchstr(line, '\v^ {1,}\D{1,}\zs\d{1,}\ze\D.*')
         if ! empty(lineNum)
             let id = matchstr(line, '\v\D{1,}\d{1,}\D{1,}\zs\d{1,}\ze\D.*')
             let name = matchstr(line, '\v\D{1,}\d{1,}\D{1,}\d{1,} [^\=]{1,}\=\zs.{1,}\ze')
