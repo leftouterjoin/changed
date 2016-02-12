@@ -149,15 +149,16 @@ function! s:Changed_execute()
     " place signs
     let lastLineNum = line('$')
     for c in changedLineNums
-echom '>' . c[0]
+"echom '>' . c[0]
         let lineNum = c[0]
         if lastLineNum < lineNum
             let lineNum = lastLineNum
         endif
         if has_key(curSignedLines, lineNum)
-echom '#' . lineNum
+"echom '#' . lineNum
+"            execute 'sign unplace ' . curSignedLines[lineNum] . ' buffer=' . bufnr('%')
             call remove(curSignedLines, lineNum)
-"            continue
+            continue
         endif
         if c[1] == '-' 
             execute 'sign place ' . c[0] . ' line=' . lineNum . ' name=SIGN_CHANGED_DELETED_VIM buffer=' . bufnr('%')
@@ -171,7 +172,7 @@ echom '#' . lineNum
 "    let lineNums = keys(curSignedLines)
     let lineNums = values(curSignedLines)
     for n in lineNums
-echom '>>' . n
+"echom '>>' . n
 "        execute 'sign place ' . n . ' line=' . n . ' name=SIGN_CHANGED_NONE buffer=' . bufnr('%')
         execute 'sign unplace ' . n . ' buffer=' . bufnr('%')
     endfor
