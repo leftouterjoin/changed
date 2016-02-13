@@ -50,7 +50,7 @@ if !exists('g:Changed_definedSigns')
     let g:Changed_definedSigns = 1
 "    highlight ChangedDefaultHl cterm=bold ctermbg=yellow ctermfg=black gui=bold guibg=yellow guifg=black
 "    highlight ChangedDefaultHl cterm=bold ctermbg=green ctermfg=black gui=bold guibg=green guifg=black
-"    highlight! ChangedDefaultHl cterm=bold ctermbg=red ctermfg=white gui=bold guibg=red guifg=white
+"    highlight ChangedDefaultHl cterm=bold ctermbg=red ctermfg=white gui=bold guibg=red guifg=white
     highlight ChangedDefaultHl cterm=bold ctermbg=blue ctermfg=white gui=bold guibg=blue guifg=white
     sign define SIGN_CHANGED_DELETED_VIM text=- texthl=ChangedDefaultHl
     sign define SIGN_CHANGED_ADDED_VIM 	 text=+ texthl=ChangedDefaultHl
