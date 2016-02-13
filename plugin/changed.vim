@@ -59,7 +59,7 @@ if !exists('g:Changed_definedSigns')
 endif
 
 function! s:Changed_clear()
-    sign unplace *
+    execute 'sign unplace * buffer=' . bufnr('%')
     if 0 < line('$')
         execute 'sign place 1 line=1 name=SIGN_CHANGED_NONE buffer=' . bufnr('%')
     endif
