@@ -130,7 +130,7 @@ function! s:Changed_execute()
         "echom 'line: ' . line
         if line[0] == '@'
             " reset pos
-            let regexp = '@@\s*-\d\+\(,\d\+\)\?\s\++\(\d\+\),\d\+\s\+@@'
+            let regexp = '@@\s*-\d\+\(,\d\+\)\?\s\++\(\d\+\)\(\(,\d\+\)\|\)\s\+@@'
             let pos = eval(substitute(line, regexp, '\2', ''))
             let minusLevel = 0
         elseif line[0] == '-' && line !~ '^---'
